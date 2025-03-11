@@ -3,49 +3,49 @@ addListeners();
 function addListeners() {
     const master = animaster();
     let heartAnim;
+    let moveAndHideAnim;
 
-    document.getElementById('fadeInPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('fadeInBlock');
-            master.fadeIn(block, 5000);
-        });
+    document.getElementById('fadeInPlay').addEventListener('click', function () {
+        const block = document.getElementById('fadeInBlock');
+        master.fadeIn(block, 5000);
+    });
 
-    document.getElementById('movePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveBlock');
-            master.move(block, 1000, { x: 100, y: 10 });
-        });
+    document.getElementById('movePlay').addEventListener('click', function () {
+        const block = document.getElementById('moveBlock');
+        master.move(block, 1000, { x: 100, y: 10 });
+    });
 
-    document.getElementById('scalePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('scaleBlock');
-            master.scale(block, 1000, 1.25);
-        });
+    document.getElementById('scalePlay').addEventListener('click', function () {
+        const block = document.getElementById('scaleBlock');
+        master.scale(block, 1000, 1.25);
+    });
 
-    document.getElementById('moveAndHidePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('moveAndHideBlock');
-            master.moveAndHide(block, 2000);
-        });
+    document.getElementById('moveAndHidePlay').addEventListener('click', function () {
+        const block = document.getElementById('moveAndHideBlock');
+        moveAndHideAnim = master.moveAndHide(block, 2000);
+    });
 
-    document.getElementById('showAndHidePlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('showAndHideBlock');
-            master.showAndHide(block, 3000);
-        });
+    document.getElementById('moveAndHideReset').addEventListener('click', function () {
+        if (moveAndHideAnim) {
+            moveAndHideAnim.reset();
+        }
+    });
 
-    document.getElementById('heartBeatingPlay')
-        .addEventListener('click', function () {
-            const block = document.getElementById('heartBeatingBlock');
-            heartAnim = master.heartBeating(block);
-        });
+    document.getElementById('showAndHidePlay').addEventListener('click', function () {
+        const block = document.getElementById('showAndHideBlock');
+        master.showAndHide(block, 3000);
+    });
 
-    document.getElementById('heartBeatingStop')
-        .addEventListener('click', function () {
-            if (heartAnim) {
-                heartAnim.stop();
-            }
-        });
+    document.getElementById('heartBeatingPlay').addEventListener('click', function () {
+        const block = document.getElementById('heartBeatingBlock');
+        heartAnim = master.heartBeating(block);
+    });
+
+    document.getElementById('heartBeatingStop').addEventListener('click', function () {
+        if (heartAnim) {
+            heartAnim.stop();
+        }
+    });
 }
 
 function animaster() {
@@ -86,9 +86,16 @@ function animaster() {
         const moveDuration = duration * 0.4;
         const fadeDuration = duration * 0.6;
         move(element, moveDuration, { x: 100, y: 20 });
-        setTimeout(() => {
+        const fadeTimeout = setTimeout(() => {
             fadeOut(element, fadeDuration);
         }, moveDuration);
+        return {
+            reset() {
+                clearTimeout(fadeTimeout);
+                resetMoveAndScale(element);
+                resetFadeOut(element);
+            }
+        };
     }
 
     function showAndHide(element, duration) {
@@ -139,9 +146,6 @@ function animaster() {
         scale,
         moveAndHide,
         showAndHide,
-        heartBeating,
-        _resetFadeIn: resetFadeIn,
-        _resetFadeOut: resetFadeOut,
-        _resetMoveAndScale: resetMoveAndScale
+        heartBeating
     };
 }
